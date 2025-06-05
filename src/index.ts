@@ -19,36 +19,27 @@ async function main() {
   // 2. Listen event CandidateRegistered
   contract.on(
     "CandidateRegistered",
-    async (sessionId, candidateAddr, name, event) => {
-      console.log(
-        `New Candidate: session ${sessionId.toString()} - ${name} (${candidateAddr})`
-      );
+    async (
+      sessionId: bigint,
+      candidateAddr: string,
+      name: string,
+      event: any
+    ) => {
+      const sid = sessionId.toString();
+      console.log(`New Candidate: session ${sid} - ${name} (${candidateAddr})`);
 
       try {
-        // Kirim ke backend: informasikan kandidat baru
-        await axios.post(
-          `${process.env.BACKEND_URL}/api/oracle/candidate`,
-          {
-            sessionId: sessionId.toString(),
-            candidate: candidateAddr,
-            name: name,
-            txHash: event.transactionHash,
-          }
-        );
+        await axios.post(`${process.env.BACKEND_URL}/api/oracle/candidate`, {
+          sessionId: sid,
+          candidateAddr: candidateAddr,
+          candidateName: name,
+        });
         console.log("=> POST /api/oracle/candidate success");
-      } catch (err) {
-        console.error("Error POST ke backend:", err.message);
+      } catch (err: any) {
+        console.error("Error POST ke /api/oracle/candidate:", err.message);
       }
     }
   );
-
-  // 3. (Optional) Listen event Voted
-  contract.on("Voted", (sessionId, candidateAddr, voter, event) => {
-    console.log(
-      `Vote: session ${sessionId.toString()} - ${candidateAddr} by ${voter}`
-    );
-    // Bisa juga kirim data vote ke backend jika ingin simpan histori voting
-  });
 }
 
 main().catch((e) => {
