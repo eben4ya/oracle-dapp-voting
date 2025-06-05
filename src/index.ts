@@ -43,13 +43,21 @@ async function main() {
         const eligibleAddresses: string[] = staffData
           .filter(staff => {
             // Ensure staff has the required properties
-            if (!staff || typeof staff.attendance !== 'number' || !staff.walletAddress) {
-              console.warn("Invalid staff record:", staff);
+            if (!staff || !staff.wallet) {
+              console.warn("Staff missing or has no wallet:", staff);
               return false;
             }
-            return staff.attendance > 75;
+            
+            // Convert attendance to number if it's a string
+            const attendance = Number(staff.attendance);
+            if (isNaN(attendance)) {
+              console.warn("Invalid attendance value:", staff.attendance);
+              return false;
+            }
+            
+            return attendance > 75;
           })
-          .map(staff => staff.walletAddress);
+          .map(staff => staff.wallet);
 
         console.log(`Eligible voters for session ${sid}:`, eligibleAddresses);
 
