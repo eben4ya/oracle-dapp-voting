@@ -1,11 +1,13 @@
-require("dotenv").config();
-const { ethers } = require("ethers");
-const axios = require("axios");
-const VotingABI = require("../out/Voting.sol/Voting.json").abi;
+import axios from "axios";
+import dotenv from "dotenv";
+import { ethers } from "ethers";
+dotenv.config();
+import VotingJSON from "../Voting.json";
+const VotingABI = VotingJSON;
 
 async function main() {
   // 1. Setup provider & contract
-  const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
+  const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
   const contract = new ethers.Contract(
     process.env.CONTRACT_ADDRESS,
     VotingABI,
