@@ -6,12 +6,13 @@ import VotingJSON from "../Voting.json";
 const VotingABI = VotingJSON;
 
 async function main() {
-  // 1. Setup provider & contract
+  // 1. Setup provider, signer & contract
   const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+  const wallet = new ethers.Wallet(process.env.PRIVATE_KEY as string, provider);
   const contract = new ethers.Contract(
-    process.env.CONTRACT_ADDRESS,
+    process.env.CONTRACT_ADDRESS as string,
     VotingABI,
-    provider
+    wallet
   );
 
   console.log("Oracle listening to Voting at", process.env.CONTRACT_ADDRESS);
